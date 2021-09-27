@@ -1,10 +1,12 @@
 package youngeun.site.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import youngeun.site.domain.Post;
 import youngeun.site.repository.GuestBookRepository;
 
 import java.util.List;
 
+@Transactional
 public class GuestBookServiceImpl implements GuestBookService {
     private final GuestBookRepository guestBookRepository;
 

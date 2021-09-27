@@ -1,79 +1,63 @@
 package youngeun.site.repository;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import youngeun.site.domain.Post;
 
-import javax.sql.DataSource;
-import java.util.HashMap;
+import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class GuestBookRepositoryImpl implements GuestBookRepository {
-    private final JdbcTemplate jdbcTemplate;
+    private final EntityManager em;
 
-    public GuestBookRepositoryImpl(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+    public GuestBookRepositoryImpl(EntityManager em) {
+        this.em = em;
     }
 
     @Override
     public Post save(Post post) {
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        jdbcInsert.withTableName("guestbook").usingGeneratedKeyColumns("id");
-
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("writer_name", post.getWriterName());
-        parameters.put("content", post.getContent());
-        parameters.put("created_datetime", post.getCreatedDatetime());
-
-        Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
-        post.setId(key.longValue());
-
+        em.persist(post);
         return post;
     }
 
     @Override
     public Optional<Post> findById(Long id) {
-        List<Post> result = jdbcTemplate.query("select * from guestbook where id = ?", postRowMapper(), id);
-        return result.stream().findAny();
+        Post post = em.find(Post.class, id);
+        return Optional.ofNullable(post);
     }
 
     @Override
     public List<Post> findByWriterName(String writerName) {
-        return jdbcTemplate.query("select * from guestbook where writer_name = ?", postRowMapper(), writerName);
+        List<Post> resultList = em.createQuery("SELECT p FROM Post p WHERE p.writerName = :writerName", Post.class)
+                .setParameter("writerName", writerName)
+                .getResultList();
+        return resultList;
     }
 
     @Override
     public List<Post> findByContent(String content) {
-        return jdbcTemplate.query("select * from guestbook where content like '%"+content+"%'", postRowMapper());
+        List<Post> resultList = em.createQuery("SELECT p FROM Post p WHERE p.content LIKE :content", Post.class)
+                .setParameter("content", "%"+content+"%")
+                .getResultList();
+        return resultList;
     }
 
     @Override
     public List<Post> findByWriterAndContent(String writerName, String content) {
-        return jdbcTemplate.query("select distinct * from guestbook where writer_name = ? and content like '%"+content+"%'", postRowMapper(), writerName);
+        List<Post> resultList = em.createQuery("SELECT p FROM Post p WHERE p.writerName = :writerName AND p.content like :content", Post.class)
+                .setParameter("writerName", writerName)
+                .setParameter("content", "%"+content+"%")
+                .getResultList();
+        return resultList;
     }
 
     @Override
     public List<Post> findAll() {
-        return jdbcTemplate.query("select * from guestbook", postRowMapper());
+        return em.createQuery("SELECT p FROM Post p", Post.class).getResultList();
     }
 
     @Override
     public int size() {
-        return jdbcTemplate.queryForObject("select count(*) from guestbook", int.class);
-    }
-
-    private RowMapper<Post> postRowMapper() {
-        return (rs, rowNum) -> {
-            Post post = new Post();
-            post.setId(rs.getLong("id"));
-            post.setWriterName(rs.getString("writer_name"));
-            post.setContent(rs.getString("content"));
-            post.setCreatedDatetime(rs.getTimestamp("created_datetime").toLocalDateTime());
-            return post;
-        };
+        int result = em.createQuery("SELECT COUNT(p) FROM Post p", Long.class).getSingleResult().intValue();
+        return result;
     }
 }

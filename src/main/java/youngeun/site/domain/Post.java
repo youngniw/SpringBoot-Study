@@ -1,8 +1,12 @@
 package youngeun.site.domain;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name="Guestbook")
 public class Post {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String writerName;
     private String content;

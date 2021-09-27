@@ -7,14 +7,14 @@ import youngeun.site.repository.GuestBookRepositoryImpl;
 import youngeun.site.service.GuestBookService;
 import youngeun.site.service.GuestBookServiceImpl;
 
-import javax.sql.DataSource;
+import javax.persistence.EntityManager;
 
 @Configuration
 public class SiteConfig {
-    private final DataSource dataSource;
+    private final EntityManager em;
 
-    public SiteConfig(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public SiteConfig(EntityManager em) {
+        this.em = em;
     }
 
     @Bean
@@ -24,6 +24,6 @@ public class SiteConfig {
 
     @Bean
     public GuestBookRepository guestBookRepository() {
-        return new GuestBookRepositoryImpl(dataSource);
+        return new GuestBookRepositoryImpl(em);
     }
 }
