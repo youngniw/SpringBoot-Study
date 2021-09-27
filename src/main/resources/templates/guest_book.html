@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>방명록</title>
+        <meta charset="UTF-8">
+        <meta authors="YoungEun Wi">
+
+        <link href="http://fonts.googleapis.com/earlyaccess/jejugothic.css" rel="stylesheet">
+        <style type="text/css">
+            body{font-family:'Jeju Gothic',sans-serif; background-color:#E6FFFF; border:medium double #B2CCFF;
+                margin:15px; padding-left:10px; padding-right:10px; padding-bottom:10px;}
+            h1{font-family:fantasy; text-align:center;}
+            h5{color:#8C8C8C; text-align:right;}
+            hr{border: 0; height: 1px; background: #DAD9FF;}
+            #add_post{margin-left:40px; margin-right:40px;}
+            input{padding:5px;}
+            button{font-family:'Jeju Gothic',sans-serif; padding:8px; border-radius:5px; background-color:#C7C4FF; border:none; text-align:center; }
+            button:hover {background-color:#6799FF; color:white;}
+            p.post_num{color:#686868; margin-right:40px; text-align:right;}
+            table{border-radius:5px; padding:2px;}
+            th{padding:10px;}
+            td{padding:10px;}
+        </style>
+    </head>
+
+    <body>
+        <h1>방명록(Guest Book)</h1>
+        <h5 th:text="'방문 일자: ' + ${date}"></h5>
+        <hr/>
+        <br/>
+
+        <div id="add_post">
+            <form id="guestbook_form" method="post">
+                <label for="name">이름: </label>
+                <input type="text" id="name" name="name" size="20" th:value="${searchWriterName}">
+
+                <label for="content" style="margin-left:20px">내용: </label>
+                <input type="text" id="content" name="content" size="90" placeholder="내용을 입력하세요:)" th:value="${searchContent}">
+
+                <button id="submit" class="btn" style="margin-left:30px">추가</button>
+                <button id="search" class="btn" style="margin-left:20px">검색</button>
+            </form>
+        </div>
+
+        <br/>
+
+        <p class="post_num">총 방명록 수: <span class="post_num" th:text="${size}"></span>개</p>
+        <table align="center" bgcolor="#F8FFFF" border="1" bordercolor="#6799FF" width="95%">
+            <colgroup>
+                <col width="25%"/>
+                <col width="*"/>
+                <col width="15%"/>
+            </colgroup>
+            <thead>
+                <tr>
+                    <th align="center">작성자</th>
+                    <th>내용</th>
+                    <th>작성일자</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="post : ${posts}">
+                    <td align="center" th:text="${post.writerName}"></td>
+                    <td th:text="${post.content}"></td>
+                    <td align="center" th:text="${#temporals.format(post.createdDatetime, 'yy/MM/dd')}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript">
+			$(document).ready(function(){
+				$("#submit").on("click", function() {
+				    if ($('#name').val() == '') {
+                        $('#name').focus();
+                        return false;
+                    }
+                    else if ($('#content').val() == '') {
+                        $('#content').focus();
+                        return false;
+                    }
+                    else {
+                        var frm = $("#guestbook_form")[0];
+                        frm.action = "/guest-book/add";
+                        frm.submit();
+					}
+				});
+
+				$("#search").on("click", function(e){
+				    e.preventDefault();
+                    var url = "/guest-book/search";
+
+                    if ($('#name').val() != '' && $('#content').val() != '') {
+                        url = url + "?writername=" + $('#name').val();
+                        url = url + "&content=" + $('#content').val();
+                        location.href = url;
+                    }
+                    else if ($('#name').val() == '' && $('#content').val() != '') {
+                        url = url + "?content=" + $('#content').val();
+                        location.href = url;
+                    }
+                    else if ($('#name').val() != '' && $('#content').val() == '') {
+                        url = url + "?writername=" + $('#name').val();
+                        location.href = url;
+                    }
+                    else {
+                        return false;
+                    }
+				});
+			});
+		</script>
+    </body>
+</html>

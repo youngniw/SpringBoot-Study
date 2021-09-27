@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>About YoungEun</title>
+        <meta charset="UTF-8">
+        <meta authors="YoungEun Wi">
+
+        <link href="http://fonts.googleapis.com/earlyaccess/jejugothic.css" rel="stylesheet">
+        <style type="text/css">
+            body{font-family:'Jeju Gothic',sans-serif; background-color:#E6FFFF; border:medium double #B2CCFF;
+                margin:15px; padding-left:10px; padding-right:10px; padding-bottom:10px;}
+            h1{font-family:fantasy; text-align:center;}
+            h5{color:#8C8C8C; text-align:right;}
+            #content{margin:10px;}
+            li{font-size:15pt;}
+            a:link{color:#6799FF;}
+            a:visited{color:#6799FF;}
+        </style>
+    </head>
+
+    <body>
+        <h1>about &nbsp;&nbsp;"YoungEun Wi"&nbsp;&nbsp;</h1>
+        <h5 th:text="'방문 일자: ' + ${date}"></h5>
+        <hr/>
+        <br/>
+        <div id="content">
+            <ol>
+                <li>2021년인 현재 저는 23살입니다.</li>
+                <br/><br/>
+                <li>저는 숙명여자대학교 IT공학과를 다닙니다.</li>
+                <br/><br/>
+                <li>저는 백엔드 개발에 관심이 있습니다.</li>
+                <br/><br/>
+                <li>저의 깃블로그는 다음과 같습니다:)&nbsp;&nbsp;<a href="https://youngniw.github.io/">-&gt; 영은 깃블로그</a></li>
+            </ol>
+        </div>
+    </body>
+</html>
