@@ -12,11 +12,11 @@
             h1{font-family:fantasy; text-align:center;}
             h5{color:#8C8C8C; text-align:right;}
             hr{border: 0; height: 1px; background: #DAD9FF;}
-            #add_post{margin-left:40px; margin-right:40px;}
+            #add-post{margin-left:40px; margin-right:40px;}
             input{padding:5px;}
             button{font-family:'Jeju Gothic',sans-serif; padding:8px; border-radius:5px; background-color:#C7C4FF; border:none; text-align:center; }
             button:hover {background-color:#6799FF; color:white;}
-            p.post_num{color:#686868; margin-right:40px; text-align:right;}
+            p.post-num{color:#686868; margin-right:40px; text-align:right;}
             table{border-radius:5px; padding:2px;}
             th{padding:10px;}
             td{padding:10px;}
@@ -29,22 +29,24 @@
         <hr/>
         <br/>
 
-        <div id="add_post">
-            <form id="guestbook_form" method="post">
+        <div id="add-post">
+            <form id="guestbook-form" method="post">
                 <label for="name">이름: </label>
                 <input type="text" id="name" name="name" size="20" th:value="${searchWriterName}">
 
                 <label for="content" style="margin-left:20px">내용: </label>
                 <input type="text" id="content" name="content" size="90" placeholder="내용을 입력하세요:)" th:value="${searchContent}">
 
-                <button id="submit" class="btn" style="margin-left:30px">추가</button>
-                <button id="search" class="btn" style="margin-left:20px">검색</button>
+                <button id="submit" type="button" class="btn" style="margin-left:30px">추가</button>
+                <button id="search" type="button" class="btn" style="margin-left:20px">검색</button>
+
+                <input type="hidden" id="userIdx" name="userIdx" th:value="${userIdx}">
             </form>
         </div>
 
         <br/>
 
-        <p class="post_num">총 방명록 수: <span class="post_num" th:text="${size}"></span>개</p>
+        <p class="post-num">총 방명록 수: <span class="post_num" th:text="${size}"></span>개</p>
         <table align="center" bgcolor="#F8FFFF" border="1" bordercolor="#6799FF" width="95%">
             <colgroup>
                 <col width="25%"/>
@@ -71,24 +73,30 @@
         <script type="text/javascript">
 			$(document).ready(function(){
 				$("#submit").on("click", function() {
-				    if ($('#name').val() == '') {
-                        $('#name').focus();
-                        return false;
-                    }
-                    else if ($('#content').val() == '') {
-                        $('#content').focus();
-                        return false;
-                    }
-                    else {
-                        var frm = $("#guestbook_form")[0];
-                        frm.action = "/guest-book/add";
-                        frm.submit();
-					}
+				    if (!$('#userIdx').val()) {
+				        alert("로그인이 필요합니다.");
+				        location.href = "/guestbook/login";
+				    }
+				    else {
+				        if ($('#name').val() == '') {
+                            $('#name').focus();
+                            return false;
+                        }
+                        else if ($('#content').val() == '') {
+                            $('#content').focus();
+                            return false;
+                        }
+                        else {
+                            var frm = $("#guestbook-form")[0];
+                            frm.action = "/guestbook/add";
+                            frm.submit();
+                        }
+				    }
 				});
 
 				$("#search").on("click", function(e){
 				    e.preventDefault();
-                    var url = "/guest-book/search";
+                    var url = "/guestbook/search";
 
                     if ($('#name').val() != '' && $('#content').val() != '') {
                         url = url + "?writername=" + $('#name').val();

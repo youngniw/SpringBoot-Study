@@ -6,22 +6,25 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import youngeun.site.domain.Post;
+import youngeun.site.domain.User;
 import youngeun.site.service.GuestBookService;
+import youngeun.site.service.UserService;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class SiteController {
     private final GuestBookService guestBookService;
+    private final UserService userService;
 
     @Autowired
-    public SiteController(GuestBookService guestBookService) {
+    public SiteController(GuestBookService guestBookService, UserService userService) {
         this.guestBookService = guestBookService;
+        this.userService = userService;
     }
 
     @GetMapping("/intro")
@@ -34,8 +37,65 @@ public class SiteController {
         return "intro";
     }
 
-    @GetMapping("/guest-book")
+    @GetMapping("/guestbook/login")
+    public String showLogin(Model model) {
+        if (model.asMap().containsKey("isWrong"))
+            model.addAttribute("isWrong", true);
+        else if (model.asMap().containsKey("isSignUp"))
+            model.addAttribute("isSignUp", true);
+
+        return "login";
+    }
+
+    @PostMapping("/guestbook/login")
+    public String checkLogin(LoginForm loginForm, RedirectAttributes rttr) {
+        Optional<User> loginUser = userService.login(loginForm.getId(), loginForm.getPassword());
+        System.out.println("loginUser = " + loginUser);
+        if (!loginUser.isPresent()) {
+            rttr.addFlashAttribute("isWrong", true);
+            return "redirect:/guestbook/login";
+        }
+        else {
+            rttr.addFlashAttribute("user", loginUser.get());
+            return "redirect:/guestbook";
+        }
+    }
+
+    @GetMapping("/guestbook/signup")
+    public String showSignup(Model model) {
+        if (model.asMap().containsKey("isFailed"))
+            model.addAttribute("isFailed", true);
+        return "signup";
+    }
+
+    @PostMapping("/guestbook/signup")
+    public String signup(SignUpForm signUpForm, RedirectAttributes rttr) {
+        User user = new User();
+        user.setId(signUpForm.getId());
+        user.setPassword(signUpForm.getPassword());
+        user.setName(signUpForm.getName());
+        user.setNickname(signUpForm.getNickname());
+
+        boolean success = userService.signup(user);
+        if (!success) {
+            rttr.addFlashAttribute("isFailed", true);
+            return "redirect:/guestbook/signup";
+        }
+        else {
+            rttr.addFlashAttribute("isSignUp", true);
+            return "redirect:/guestbook/login";
+        }
+    }
+
+    @GetMapping("/guestbook")
     public String guestBook(Model model) {
+        if (model.asMap().containsKey("user")) {
+            Map<String, Object> map = model.asMap();
+
+            User user = (User) map.get("user");
+            model.addAttribute("userIdx", user.getUserIdx());
+        }
+
         Date currentDate = new Date();
         SimpleDateFormat date = new SimpleDateFormat("yyyy.MM.dd");
         String today = date.format(currentDate);
@@ -48,7 +108,7 @@ public class SiteController {
         return "guest_book";
     }
 
-    @GetMapping("/guest-book/search")
+    @GetMapping("/guestbook/search")
     public String guestBookSearchList(@RequestParam(value = "writername", required = false) String writerName, @RequestParam(value = "content", required = false) String content, Model model) {
         Date currentDate = new Date();
         SimpleDateFormat date = new SimpleDateFormat("yyyy.MM.dd");
@@ -76,7 +136,7 @@ public class SiteController {
         return "guest_book";
     }
 
-    @PostMapping("/guest-book/add")
+    @PostMapping("/guestbook/add")
     public String addPost(PostForm postForm) {
         Post post = new Post();
         post.setWriterName(postForm.getName());
@@ -85,6 +145,6 @@ public class SiteController {
 
         guestBookService.leave(post);
 
-        return "redirect:/guest-book";
+        return "redirect:/guestbook";
     }
 }
