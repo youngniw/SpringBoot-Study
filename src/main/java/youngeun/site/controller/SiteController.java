@@ -94,6 +94,7 @@ public class SiteController {
 
             User user = (User) map.get("user");
             model.addAttribute("userIdx", user.getUserIdx());
+            model.addAttribute("userNick", user.getNickname());
         }
 
         Date currentDate = new Date();
@@ -109,25 +110,13 @@ public class SiteController {
     }
 
     @GetMapping("/guestbook/search")
-    public String guestBookSearchList(@RequestParam(value = "writername", required = false) String writerName, @RequestParam(value = "content", required = false) String content, Model model) {
+    public String guestBookSearchList(@RequestParam("content") String content, Model model) {
         Date currentDate = new Date();
         SimpleDateFormat date = new SimpleDateFormat("yyyy.MM.dd");
         String today = date.format(currentDate);
 
-        List<Post> posts = new ArrayList<>();
-        if (writerName != null && content == null) {
-            posts = guestBookService.findWriterPosts(writerName);
-            model.addAttribute("searchWriterName", writerName);
-        }
-        else if (writerName == null && content != null) {
-            posts = guestBookService.findContentPosts(content);
-            model.addAttribute("searchContent", content);
-        }
-        else if (writerName != null && content != null) {
-            posts = guestBookService.findByWriterAndContent(writerName, content);
-            model.addAttribute("searchWriterName", writerName);
-            model.addAttribute("searchContent", content);
-        }
+        List<Post> posts = guestBookService.findContentPosts(content);
+        model.addAttribute("searchContent", content);
 
         model.addAttribute("date", today);
         model.addAttribute("size", posts.size());
@@ -138,8 +127,11 @@ public class SiteController {
 
     @PostMapping("/guestbook/add")
     public String addPost(PostForm postForm) {
+        User writer = new User();
+        writer.setUserIdx(postForm.getUserIdx());
+
         Post post = new Post();
-        post.setWriterName(postForm.getName());
+        post.setWriter(writer);
         post.setContent(postForm.getContent());
         post.setCreatedDatetime(LocalDateTime.now());
 

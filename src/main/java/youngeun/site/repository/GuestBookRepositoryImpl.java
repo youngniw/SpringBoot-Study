@@ -15,20 +15,21 @@ public class GuestBookRepositoryImpl implements GuestBookRepository {
 
     @Override
     public Post save(Post post) {
+        System.out.println("RepositoryImpl");
         em.persist(post);
         return post;
     }
 
     @Override
-    public Optional<Post> findById(Long id) {
-        Post post = em.find(Post.class, id);
+    public Optional<Post> findByGuestbookIdx(Long guestbookIdx) {
+        Post post = em.find(Post.class, guestbookIdx);
         return Optional.ofNullable(post);
     }
 
     @Override
-    public List<Post> findByWriterName(String writerName) {
-        List<Post> resultList = em.createQuery("SELECT p FROM Post p WHERE p.writerName = :writerName", Post.class)
-                .setParameter("writerName", writerName)
+    public List<Post> findByWriterIdx(Long writerIdx) {
+        List<Post> resultList = em.createQuery("SELECT p FROM Post p WHERE p.writerIdx = :writerIdx", Post.class)
+                .setParameter("writerIdx", writerIdx)
                 .getResultList();
         return resultList;
     }
@@ -42,9 +43,9 @@ public class GuestBookRepositoryImpl implements GuestBookRepository {
     }
 
     @Override
-    public List<Post> findByWriterAndContent(String writerName, String content) {
-        List<Post> resultList = em.createQuery("SELECT p FROM Post p WHERE p.writerName = :writerName AND p.content like :content", Post.class)
-                .setParameter("writerName", writerName)
+    public List<Post> findByWriterIdxAndContent(Long writerIdx, String content) {
+        List<Post> resultList = em.createQuery("SELECT p FROM Post p WHERE p.writerIdx = :writerIdx AND p.content like :content", Post.class)
+                .setParameter("writerIdx", writerIdx)
                 .setParameter("content", "%"+content+"%")
                 .getResultList();
         return resultList;

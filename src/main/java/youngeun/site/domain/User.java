@@ -1,53 +1,29 @@
 package youngeun.site.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
+@Getter
+@Setter
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userIdx;
+    private Long userIdx;
     private String id;
     private String password;
     private String name;
     private String nickname;
 
-    public long getUserIdx() {
-        return userIdx;
-    }
-
-    public void setUserIdx(long userIdx) {
-        this.userIdx = userIdx;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    @Override
+    public String toString() {
+        return "User{" +
+                "userIdx=" + userIdx +
+                ", id='" + id + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", nickname='" + nickname + '\'' +
+                '}';
     }
 }

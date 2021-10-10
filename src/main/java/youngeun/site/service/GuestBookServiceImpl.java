@@ -15,9 +15,10 @@ public class GuestBookServiceImpl implements GuestBookService {
     }
 
     @Override
-    public Long leave(Post post) {
+    public Post leave(Post post) {
+        System.out.println("ServiceImpl");
         guestBookRepository.save(post);
-        return post.getId();
+        return post;
     }
 
     @Override
@@ -26,8 +27,8 @@ public class GuestBookServiceImpl implements GuestBookService {
     }
 
     @Override
-    public List<Post> findWriterPosts(String writerName) {
-        return guestBookRepository.findByWriterName(writerName);
+    public List<Post> findWriterPosts(Long writerIdx) {
+        return guestBookRepository.findByWriterIdx(writerIdx);
     }
 
     @Override
@@ -36,8 +37,8 @@ public class GuestBookServiceImpl implements GuestBookService {
     }
 
     @Override
-    public List<Post> findByWriterAndContent(String writerName, String content) {
-        return guestBookRepository.findByWriterAndContent(writerName, content);
+    public List<Post> findByWriterAndContent(Long writerIdx, String content) {
+        return guestBookRepository.findByWriterIdxAndContent(writerIdx, content);
     }
 
     @Override

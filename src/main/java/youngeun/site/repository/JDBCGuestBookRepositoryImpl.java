@@ -12,14 +12,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class JDBCGuestBookRepositoryImpl implements GuestBookRepository {
+public class JDBCGuestBookRepositoryImpl {
     private final JdbcTemplate jdbcTemplate;
 
     public JDBCGuestBookRepositoryImpl(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    @Override
+    //@Override
+    /*
     public Post save(Post post) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("guestbook").usingGeneratedKeyColumns("id");
@@ -35,33 +36,33 @@ public class JDBCGuestBookRepositoryImpl implements GuestBookRepository {
         return post;
     }
 
-    @Override
+    //@Override
     public Optional<Post> findById(Long id) {
         List<Post> result = jdbcTemplate.query("select * from guestbook where id = ?", postRowMapper(), id);
         return result.stream().findAny();
     }
 
-    @Override
+    //@Override
     public List<Post> findByWriterName(String writerName) {
         return jdbcTemplate.query("select * from guestbook where writer_name = ?", postRowMapper(), writerName);
     }
 
-    @Override
+    //@Override
     public List<Post> findByContent(String content) {
         return jdbcTemplate.query("select * from guestbook where content like '%"+content+"%'", postRowMapper());
     }
 
-    @Override
+    //@Override
     public List<Post> findByWriterAndContent(String writerName, String content) {
         return jdbcTemplate.query("select distinct * from guestbook where writer_name = ? and content like '%"+content+"%'", postRowMapper(), writerName);
     }
 
-    @Override
+    //@Override
     public List<Post> findAll() {
         return jdbcTemplate.query("select * from guestbook", postRowMapper());
     }
 
-    @Override
+    //@Override
     public int size() {
         return jdbcTemplate.queryForObject("select count(*) from guestbook", int.class);
     }
@@ -76,4 +77,5 @@ public class JDBCGuestBookRepositoryImpl implements GuestBookRepository {
             return post;
         };
     }
+     */
 }

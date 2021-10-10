@@ -32,12 +32,12 @@
         <div id="add-post">
             <form id="guestbook-form" method="post">
                 <label for="name">이름: </label>
-                <input type="text" id="name" name="name" size="20" th:value="${searchWriterName}">
+                <input type="text" id="name" name="name" size="20" th:value="${userNick}" disabled>
 
                 <label for="content" style="margin-left:20px">내용: </label>
                 <input type="text" id="content" name="content" size="90" placeholder="내용을 입력하세요:)" th:value="${searchContent}">
 
-                <button id="submit" type="button" class="btn" style="margin-left:30px">추가</button>
+                <button id="add" type="button" class="btn" style="margin-left:30px">추가</button>
                 <button id="search" type="button" class="btn" style="margin-left:20px">검색</button>
 
                 <input type="hidden" id="userIdx" name="userIdx" th:value="${userIdx}">
@@ -62,7 +62,7 @@
             </thead>
             <tbody>
                 <tr th:each="post : ${posts}">
-                    <td align="center" th:text="${post.writerName}"></td>
+                    <td align="center" th:text="${post.writer.nickname}"></td>
                     <td th:text="${post.content}"></td>
                     <td align="center" th:text="${#temporals.format(post.createdDatetime, 'yy/MM/dd')}"></td>
                 </tr>
@@ -72,24 +72,20 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script type="text/javascript">
 			$(document).ready(function(){
-				$("#submit").on("click", function() {
+				$("#add").on("click", function() {
 				    if (!$('#userIdx').val()) {
 				        alert("로그인이 필요합니다.");
 				        location.href = "/guestbook/login";
 				    }
 				    else {
-				        if ($('#name').val() == '') {
-                            $('#name').focus();
-                            return false;
-                        }
-                        else if ($('#content').val() == '') {
+				        if ($('#content').val() == '') {
                             $('#content').focus();
                             return false;
                         }
                         else {
-                            var frm = $("#guestbook-form")[0];
-                            frm.action = "/guestbook/add";
-                            frm.submit();
+                            var form = $("#guestbook-form")[0];
+                            form.action = "/guestbook/add";
+                            form.submit();
                         }
 				    }
 				});
@@ -98,17 +94,8 @@
 				    e.preventDefault();
                     var url = "/guestbook/search";
 
-                    if ($('#name').val() != '' && $('#content').val() != '') {
-                        url = url + "?writername=" + $('#name').val();
-                        url = url + "&content=" + $('#content').val();
-                        location.href = url;
-                    }
-                    else if ($('#name').val() == '' && $('#content').val() != '') {
+                    if ($('#content').val() != '') {
                         url = url + "?content=" + $('#content').val();
-                        location.href = url;
-                    }
-                    else if ($('#name').val() != '' && $('#content').val() == '') {
-                        url = url + "?writername=" + $('#name').val();
                         location.href = url;
                     }
                     else {

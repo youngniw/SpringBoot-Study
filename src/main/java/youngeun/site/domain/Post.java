@@ -1,42 +1,37 @@
 package youngeun.site.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name="Guestbook")
+@DynamicInsert
+@Getter
+@Setter
 public class Post {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String writerName;
+    private Long guestbookIdx;
+
+    @ManyToOne
+    @JoinColumn(name="writer_idx")
+    private User writer;
+
     private String content;
-    private LocalDateTime createdDatetime;	//작성시간
+    private LocalDateTime createdDatetime;	    //작성시간
+    private LocalDateTime updatedDatetime;	    //수정시간
 
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getWriterName() {
-        return writerName;
-    }
-    public void setWriterName(String writerName) {
-        this.writerName = writerName;
-    }
-
-    public String getContent() {
-        return content;
-    }
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public LocalDateTime getCreatedDatetime() {
-        return createdDatetime;
-    }
-    public void setCreatedDatetime(LocalDateTime createdDatetime) {
-        this.createdDatetime = createdDatetime;
+    @Override
+    public String toString() {
+        return "Post{" +
+                "guestbookIdx=" + guestbookIdx +
+                ", writer=" + writer.toString() +
+                ", content='" + content + '\'' +
+                ", createdDatetime=" + createdDatetime +
+                ", updatedDatetime=" + updatedDatetime +
+                '}';
     }
 }
