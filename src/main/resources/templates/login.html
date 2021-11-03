@@ -28,7 +28,7 @@
                 alert("아이디 혹은 비밀번호가 틀립니다. 다시 로그인해 주세요.");
             </script>
         </div>
-        <div th:if="${isSignUp != null}">
+        <div th:if="${isRegister != null}">
             <script type="text/javascript">
                 alert("회원가입이 되었습니다. 로그인해 주세요.");
             </script>
@@ -38,7 +38,7 @@
             <h2>Login</h2>
             <div style="line-height:0%;"><br/></div>
 
-            <form id="login-form" action="/guestbook/login" method="post">
+            <form id="login-form" action="/login" method="post">
                 <div id="id-form">
                     <input type="text" id="id" name="id" placeholder="ID">
                 </div>
@@ -50,7 +50,7 @@
             </form>
 
             <div class="bottomText">
-                ID가 없으신가요? <a href="/guestbook/signup">회원가입</a>을 해보세요!
+                ID가 없으신가요? <a href="/register">회원가입</a>을 해보세요!
             </div>
         </div>
     </body>

@@ -37,23 +37,23 @@ public class SiteController {
         return "intro";
     }
 
-    @GetMapping("/guestbook/login")
+    @GetMapping("/login")
     public String showLogin(Model model) {
         if (model.asMap().containsKey("isWrong"))
             model.addAttribute("isWrong", true);
-        else if (model.asMap().containsKey("isSignUp"))
-            model.addAttribute("isSignUp", true);
+        else if (model.asMap().containsKey("isRegister"))
+            model.addAttribute("isRegister", true);
 
         return "login";
     }
 
-    @PostMapping("/guestbook/login")
+    @PostMapping("/login")
     public String checkLogin(LoginForm loginForm, RedirectAttributes rttr) {
         Optional<User> loginUser = userService.login(loginForm.getId(), loginForm.getPassword());
         System.out.println("loginUser = " + loginUser);
         if (!loginUser.isPresent()) {
             rttr.addFlashAttribute("isWrong", true);
-            return "redirect:/guestbook/login";
+            return "redirect:/login";
         }
         else {
             rttr.addFlashAttribute("user", loginUser.get());
@@ -61,29 +61,29 @@ public class SiteController {
         }
     }
 
-    @GetMapping("/guestbook/signup")
-    public String showSignup(Model model) {
+    @GetMapping("/register")
+    public String showRegister(Model model) {
         if (model.asMap().containsKey("isFailed"))
             model.addAttribute("isFailed", true);
-        return "signup";
+        return "register";
     }
 
-    @PostMapping("/guestbook/signup")
-    public String signup(SignUpForm signUpForm, RedirectAttributes rttr) {
-        User user = new User();
-        user.setId(signUpForm.getId());
-        user.setPassword(signUpForm.getPassword());
-        user.setName(signUpForm.getName());
-        user.setNickname(signUpForm.getNickname());
+    @PostMapping("/register")
+    public String register(RegisterForm registerForm, RedirectAttributes rttr) {
+        User newUser = new User();
+        newUser.setId(registerForm.getId());
+        newUser.setPassword(registerForm.getPassword());
+        newUser.setName(registerForm.getName());
+        newUser.setNickname(registerForm.getNickname());
 
-        boolean success = userService.signup(user);
+        boolean success = userService.register(newUser);
         if (!success) {
             rttr.addFlashAttribute("isFailed", true);
-            return "redirect:/guestbook/signup";
+            return "redirect:/register";
         }
         else {
-            rttr.addFlashAttribute("isSignUp", true);
-            return "redirect:/guestbook/login";
+            rttr.addFlashAttribute("isRegister", true);
+            return "redirect:/login";
         }
     }
 

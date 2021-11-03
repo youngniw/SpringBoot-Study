@@ -15,9 +15,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean signup(User user) {
-        User signUpUser = userRepository.save(user);
-        if (signUpUser != null)
+    public boolean register(User user) {
+        User newUser = userRepository.save(user);
+        if (newUser != null)
             return true;
         else
             return false;

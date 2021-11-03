@@ -33,7 +33,7 @@
             <h2>회원가입</h2>
             <div style="line-height:0%;"><br/></div>
 
-            <form id="signup-form" action="/guestbook/signup" method="post">
+            <form id="register-form" action="/register" method="post">
                 <div class="field-form">
                     <input type="text" id="id" name="id" placeholder="아이디">
                 </div>
@@ -72,7 +72,7 @@
                         return false;
                     }
                     else {
-                        var frm = $("#signup-form")[0];
+                        var frm = $("#register-form")[0];
                         frm.submit();
                     }
 				});
